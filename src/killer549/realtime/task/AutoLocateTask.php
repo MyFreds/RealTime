@@ -40,7 +40,7 @@ class AutoLocateTask extends AsyncTask{
 		$this->path = RealTime::getInstance()->getDataFolder();
 	}
 
-	public function onRun(){
+	public function onRun(): void {
 		try{
 			if(!is_file($this->path."geoplugin.yml") or yaml_parse(file_get_contents($this->path."geoplugin.yml"))["agree"] !== "TRUE"){
 				throw new PluginException("[RealTime] You must accept geoPlugin policies. You may disable the auto_locate setting from config.yml");
@@ -66,7 +66,7 @@ class AutoLocateTask extends AsyncTask{
 		}
 	}
 
-	public function onCompletion(Server $server){
+	public function onCompletion(): void {
 		if($this->getResult() === false){
 			$server->getLogger()->error($this->message);
 			$server->getLogger()->error("[RealTime] Couldn't verify location details.");
