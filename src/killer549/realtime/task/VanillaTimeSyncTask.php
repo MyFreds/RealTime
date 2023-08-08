@@ -31,7 +31,7 @@ class VanillaTimeSyncTask extends Task{
 		$this->core = $core;
 	}
 
-	public function onRun(int $currentTick){
+	public function onRun(): void {
 		$this->core->syncVanillaTime();
 	}
 }
