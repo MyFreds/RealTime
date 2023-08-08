@@ -1,21 +1,24 @@
 name: RealTime
-author: killer549
-api: 3.0.0
-version: 1.2.1
+author: killer549 (Author), Fred (Convert)
+api:
+- 4.0.0
+- 5.0.0
+version: 1.2.2
 main: killer549\realtime\RealTime
 permissions:
+  realtime.command.use:
+    default: true
   realtime.command.*:
     default: op
-    children:
-      realtime.command.current:
-        default: true
-      realtime.command.disable:
-        default: op
-      realtime.command.enable:
-        default: op
-      realtime.command.help:
-        default: true
-      realtime.command.reload:
-        default: op
-      realtime.command.status:
-        default: true
+  realtime.command.current:
+    default: true
+  realtime.command.disable:
+    default: op
+  realtime.command.enable:
+    default: op
+  realtime.command.help:
+    default: true
+  realtime.command.reload:
+    default: op
+  realtime.command.status:
+    default: true
