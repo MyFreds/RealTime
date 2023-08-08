@@ -40,6 +40,7 @@ class RealtimeCommands extends Command{
 		self::$children["reload"] = new ReloadCommand();
 		self::$children["status"] = new StatusCommand();
 		parent::__construct("realtime", "Realtime main command", null, ["rt"]);
+		$this->setPermission("realtime.command.use");
 	}
 
 	public function execute(CommandSender $sender, string $commandLabel, array $args){
