@@ -26,10 +26,10 @@ use killer549\realtime\event\MinuteChangeEvent;
 use killer549\realtime\task\AutoLocateTask;
 use killer549\realtime\task\VanillaTimeSyncTask;
 use killer549\realtime\task\TimeCycleTask;
-use pocketmine\event\level\LevelLoadEvent;
-use pocketmine\event\level\LevelUnloadEvent;
+use pocketmine\event\world\WorldLoadEvent;
+use pocketmine\event\world\WorldUnloadEvent;
 use pocketmine\event\Listener;
-use pocketmine\level\Level;
+use pocketmine\world\World;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;
 
@@ -54,17 +54,17 @@ class RealTime extends PluginBase implements Listener{
 	private $enabled_worlds;
 	private $mc_tick = 0, $mc_sun_angle = 0, $real_altitude = 0;
 
-	public function onLoad(){
+	public function onLoad(): void {
 		self::$instance = $this;
 		$this->saveResource("geoplugin.yml");
 	}
 
-	public function onEnable(){
+	public function onEnable(): void {
 		$this->settings = new SettingsManager($this);
 		if($this->getSettings()->isLocationCyclingEnabled() and $this->settings->isAutoLocateEnabled()){
 			$this->getServer()->getAsyncPool()->submitTask($auto_locate_task = new AutoLocateTask($this->settings->getLatitude(), $this->settings->getLongitude()));
 		}
-		$this->enabled_worlds = $this->settings->getEnabledWorlds() ?? $this->getServer()->getLevels();
+		$this->enabled_worlds = $this->settings->getEnabledWorlds() ?? $this->getServer()->getWorldManager()->getWorlds();
 		$this->getScheduler()->scheduleRepeatingTask(new TimeCycleTask($this), 20);
 		if($this->settings->isCyclingEnabled()){
 			$this->startTimeSync();
@@ -239,19 +239,19 @@ class RealTime extends PluginBase implements Listener{
 		return $this->sunsetTime;
 	}
 
-	public function onWorldLoad(LevelLoadEvent $event){
+	public function onWorldLoad(WorldLoadEvent $event){
 		if(empty($this->settings->getAllWorlds())){
-			$this->enabled_worlds = $this->getServer()->getLevels();
+			$this->enabled_worlds = $this->getServer()->getWorldManager()->getWorlds();
 
 			return;
 		}
-		if(in_array($event->getLevel()->getName(), $this->settings->getAllWorlds())){
-			$this->enabled_worlds[] = $event->getLevel();
+		if(in_array($event->getWorld()->getName(), $this->settings->getAllWorlds())){
+			$this->enabled_worlds[] = $event->getWorld();
 		}
 	}
 
-	public function onWorldUnload(LevelUnloadEvent $event){
-		if(($key = array_search($event->getLevel(), $this->enabled_worlds)) !== false){
+	public function onWorldUnload(WorldUnloadEvent $event){
+		if(($key = array_search($event->getWorld(), $this->enabled_worlds)) !== false){
 			unset($this->enabled_worlds[$key]);
 		}
 	}
